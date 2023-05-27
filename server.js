@@ -7,7 +7,7 @@ import { errorHandler, notFound } from "./Middleware/Errors.js";
 import userRouter from "./Routes/UserRoutes.js";
 import orderRouter from "./Routes/orderRoutes.js";
 import cors from "cors";
-const { createProxyMiddleware } = require('http-proxy-middleware');
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 dotenv.config();
 connectDatabase();
@@ -31,7 +31,10 @@ app.use(errorHandler);
 app.use(express.static('client/build'));
 
 // Proxy API requests to the backend server
-app.use('/api', createProxyMiddleware({ target: 'https://leslies-server-m6k7.onrender.com', changeOrigin: true }));
+const proxy = createProxyMiddleware({
+  target: 'https://leslies-server-m6k7.onrender.com',  // Replace with your backend server URL
+  changeOrigin: true,  // Set the option to true for backend servers that expect a different host header
+});
 
 // Handle other routes and return the React app
 app.get('*', (req, res) => {
