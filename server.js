@@ -27,6 +27,17 @@ app.get("/api/config/paypal", (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
+app.use(express.static(path.join(__dirname, 'client/build')));
+
+// Proxy API requests to the backend server
+app.use('/api', createProxyMiddleware({ target: 'https://leslies-server-m6k7.onrender.com', changeOrigin: true }));
+
+// Handle other routes and return the React app
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client/build/index.html'));
+});
+
+
 const PORT = process.env.PORT || 1000;
 
 app.listen(PORT, console.log(`server run in port ${PORT}`));
