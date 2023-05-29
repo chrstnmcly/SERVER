@@ -7,7 +7,6 @@ import { errorHandler, notFound } from "./Middleware/Errors.js";
 import userRouter from "./Routes/UserRoutes.js";
 import orderRouter from "./Routes/orderRoutes.js";
 import cors from "cors";
-import { createProxyMiddleware } from 'http-proxy-middleware';
 
 dotenv.config();
 connectDatabase();
@@ -27,19 +26,6 @@ app.get("/api/config/paypal", (req, res) => {
 // ERROR HANDLER
 app.use(notFound);
 app.use(errorHandler);
-
-app.use(express.static('client/build'));
-
-// Proxy API requests to the backend server
-const proxy = createProxyMiddleware({
-  target: 'https://leslies-server-m6k7.onrender.com',  // Replace with your backend server URL
-  changeOrigin: true,  // Set the option to true for backend servers that expect a different host header
-});
-
-// Handle other routes and return the React app
-app.get('*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
-});
 
 const PORT = process.env.PORT || 1000;
 
